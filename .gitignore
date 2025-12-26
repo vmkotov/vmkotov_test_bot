@@ -34,3 +34,22 @@ Dockerfile
 *.backup
 *.orig
 *.rej
+
+# Наши специфичные файлы
+key-v2.json
+test_bot_v2
+main.go.backup
+go.mod.backup
+*.backup
+
+# Дополнительные временные файлы
+*.swp
+*.swo
+*.swn
+*.pid
+
+# Папка vendor для Go (если используется)
+vendor/
+
+# Docker игноры (опционально)
+docker-compose.override.yml
