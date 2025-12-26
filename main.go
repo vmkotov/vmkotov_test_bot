@@ -65,3 +65,4 @@ func main() {
 }
 // Trigger deployment
 // Test commit to trigger deployment
+// Fix: Add permissions for service account
