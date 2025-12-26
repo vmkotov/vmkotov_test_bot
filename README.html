@@ -55,6 +55,7 @@
             font-family: 'Courier New', monospace;
             margin: 15px 0;
             overflow-x: auto;
+            position: relative;
         }
         .command code {
             display: block;
@@ -75,6 +76,14 @@
             padding: 15px;
             border-radius: 5px;
             margin: 20px 0;
+        }
+        .quick-start {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 10px;
+            padding: 25px;
+            margin: 30px 0;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
         }
         .note {
             background: #d4edda;
@@ -131,11 +140,69 @@
         tr:hover {
             background-color: #f5f5f5;
         }
+        .copy-btn {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 10px;
+            font-size: 0.9em;
+            transition: background 0.3s;
+        }
+        .copy-btn:hover {
+            background: #2980b9;
+        }
+        .checklist {
+            margin-left: 20px;
+        }
+        .checklist li {
+            margin: 8px 0;
+            padding-left: 5px;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <h1><span class="emoji">📚</span> Полное руководство: Создание Telegram бота на Go с CI/CD на Yandex Cloud</h1>
+        
+        <!-- БЛОК БЫСТРОГО СТАРТА -->
+        <div class="quick-start">
+            <h2 style="color: white; border-left: none; padding-left: 0; margin-top: 0;">
+                <span class="emoji">⚡</span> Быстрый старт из шаблона (за 2 минуты)
+            </h2>
+            <p>Уже есть готовый рабочий шаблон? Просто выполните:</p>
+            
+            <div class="command">
+                <code># Клонируйте шаблон
+git clone https://github.com/vmkotov/vmkotov_test_bot.git my-new-bot
+cd my-new-bot
+
+# Настройте новый проект
+rm -rf .git
+git init
+go mod init my-new-bot
+cp .env.example .env
+
+# Добавьте токен бота в .env
+echo "TELEGRAM_BOT_TOKEN=your_token_here" >> .env</code>
+            </div>
+            
+            <div style="margin-top: 20px;">
+                <p><strong>Далее настройте:</strong></p>
+                <ul class="checklist" style="color: white;">
+                    <li>✅ Отредактируйте <code style="background: rgba(255,255,255,0.2); padding: 2px 5px;">main.go</code> под свои задачи</li>
+                    <li>✅ Добавьте секреты в GitHub Actions</li>
+                    <li>✅ Создайте репозиторий и запушьте код</li>
+                    <li>✅ Готово! CI/CD автоматически развернёт бота</li>
+                </ul>
+            </div>
+            
+            <p style="margin-top: 15px; font-style: italic;">
+                Ниже — полное руководство для тех, кто хочет разобраться в деталях ↓
+            </p>
+        </div>
         
         <div class="toc">
             <h2>📋 Содержание</h2>
@@ -589,6 +656,16 @@ curl -X POST "https://your-container.containers.yandexcloud.net/" \
                         <td>Нет секретов GitHub</td>
                         <td>Добавить все секреты</td>
                     </tr>
+                    <tr>
+                        <td>Бот не видит сообщения</td>
+                        <td>Privacy mode включён</td>
+                        <td>/setprivacy → Disable</td>
+                    </tr>
+                    <tr>
+                        <td>Docker build failed</td>
+                        <td>Нет зависимостей</td>
+                        <td>Проверить go.mod и go.sum</td>
+                    </tr>
                 </table>
             </div>
         </section>
@@ -597,90 +674,201 @@ curl -X POST "https://your-container.containers.yandexcloud.net/" \
             <h2><span class="emoji">🎯</span> 9. Шаблоны и лучшие практики</h2>
             
             <div class="step">
-                <h3>Скрипт для быстрого создания проекта на основе шаблона:</h3>
+                <h3>Автоматический скрипт создания бота:</h3>
                 <div class="command">
 <code>#!/bin/bash
-# create-bot-from-template.sh
+# create-bot.sh - автоматическое создание бота из шаблона
 
-echo "🤖 Создание нового бота на основе шаблона"
+set -e
 
-# 1. Клонирование вашего рабочего бота как шаблона
-read -p "📝 Введите имя нового проекта: " PROJECT_NAME
-git clone https://github.com/YOUR_USERNAME/YOUR_WORKING_BOT.git "$PROJECT_NAME"
+echo "🤖 Создание нового Telegram бота из шаблона"
+echo "=========================================="
+
+# Запрос имени проекта
+read -p "📝 Введите имя проекта (только латиница, без пробелов): " PROJECT_NAME
+PROJECT_NAME=${PROJECT_NAME// /-}
+
+echo ""
+echo "🚀 Клонирование шаблона..."
+git clone https://github.com/vmkotov/vmkotov_test_bot.git "$PROJECT_NAME"
 cd "$PROJECT_NAME"
 
-# 2. Очистка и настройка
+echo "🔄 Очистка Git истории..."
 rm -rf .git
 git init
 
-# 3. Обновление модуля
+echo "📦 Настройка Go модуля..."
 go mod init "$PROJECT_NAME"
 
-# 4. Обновление .env.example
-echo "TELEGRAM_BOT_TOKEN=your_token_here" > .env.example
-echo "PORT=8080" >> .env.example
-echo "DEBUG=false" >> .env.example
-
-# 5. Создание .env файла для локальной разработки
+echo "⚙️ Создание файлов конфигурации..."
 cp .env.example .env
 
 echo ""
-echo "🎉 Проект '$PROJECT_NAME' создан!"
+echo "✅ Проект '$PROJECT_NAME' успешно создан!"
 echo ""
-echo "📋 Дальнейшие шаги:"
-echo "1. Отредактируйте .env файл (добавьте TELEGRAM_BOT_TOKEN)"
-echo "2. Измените main.go под свои нужды"
-echo "3. Обновите deploy.yml с новыми названиями"
-echo "4. Настройте секреты в GitHub"
-echo "5. Создайте репозиторий и запушьте код"</code>
+echo "📋 Следующие шаги:"
+echo "1. Откройте файл .env и добавьте TELEGRAM_BOT_TOKEN"
+echo "2. Отредактируйте main.go под ваши задачи"
+echo "3. (Опционально) Обновите deploy.yml"
+echo "4. Создайте репозиторий на GitHub и настройте секреты"
+echo "5. Запушьте код:"
+echo ""
+echo "   git add ."
+echo "   git commit -m 'Initial commit'"
+echo "   git branch -M main"
+echo "   git remote add origin https://github.com/YOUR_USERNAME/$PROJECT_NAME.git"
+echo "   git push -u origin main"
+echo ""
+echo "🎉 После push CI/CD автоматически развернёт бота на Yandex Cloud!"</code>
+                </div>
+            </div>
+            
+            <div class="step">
+                <h3>Полезные команды для работы с шаблоном:</h3>
+                <div class="command">
+<code># Быстрая настройка нового бота (одной командой)
+bash <(curl -s https://raw.githubusercontent.com/vmkotov/vmkotov_test_bot/main/scripts/create-bot.sh)
+
+# Сброс и пересоздание (если что-то пошло не так)
+cd my-bot
+rm -rf .git
+git init
+go mod tidy
+docker system prune -a --volumes</code>
                 </div>
             </div>
             
             <div class="success">
-                <strong>✅ Итог:</strong> Теперь у вас есть полная инструкция по созданию Telegram бота с нуля, основанная на реальном опыте. Используйте эту документацию как основу для всех будущих проектов!
+                <strong>✅ Итог:</strong> Теперь у вас есть полное руководство по созданию и развертыванию Telegram ботов на Go с автоматическим CI/CD. Сохраните эту страницу как шаблон для всех будущих проектов!
             </div>
             
             <div class="note">
-                <strong>💡 Совет:</strong> Сохраните эту HTML-страницу как шаблон. При создании нового бота просто:
-                <ol>
-                    <li>Скопируйте рабочий проект как основу</li>
-                    <li>Обновите переменные окружения</li>
-                    <li>Настройте секреты GitHub</li>
-                    <li>Используйте эту инструкцию для отладки</li>
-                </ol>
+                <strong>💡 Профессиональный совет:</strong>
+                <ul class="checklist">
+                    <li>Всегда используйте <code>.env.example</code> для примеров конфигурации</li>
+                    <li>Храните токены и ключи только в секретах GitHub</li>
+                    <li>Добавляйте логирование в бота для отладки</li>
+                    <li>Используйте версионирование (семантические версии)</li>
+                    <li>Создавайте отдельные ветки для новых функций</li>
+                </ul>
             </div>
         </section>
         
         <div style="margin-top: 50px; padding: 20px; text-align: center; border-top: 2px solid #ecf0f1;">
             <p>📚 Руководство создано на основе реального опыта развертывания бота <strong>vmkotov_test_bot</strong></p>
             <p>🔄 Последнее обновление: декабрь 2024</p>
+            <p>🐛 Нашли ошибку? <a href="https://github.com/vmkotov/vmkotov_test_bot/issues" target="_blank">Сообщите в Issues</a></p>
         </div>
     </div>
 
     <script>
-        // Простой скрипт для копирования команд
-        document.querySelectorAll('.command').forEach(command => {
-            const copyBtn = document.createElement('button');
-            copyBtn.textContent = '📋 Копировать';
-            copyBtn.style.cssText = `
-                background: #3498db;
-                color: white;
-                border: none;
-                padding: 5px 10px;
-                border-radius: 3px;
-                cursor: pointer;
-                margin-top: 10px;
-                display: block;
-            `;
-            copyBtn.onclick = function() {
-                const code = command.querySelector('code').textContent;
-                navigator.clipboard.writeText(code).then(() => {
-                    copyBtn.textContent = '✅ Скопировано!';
-                    setTimeout(() => copyBtn.textContent = '📋 Копировать', 2000);
+        // Автоматическое добавление кнопок копирования ко всем командам
+        document.addEventListener('DOMContentLoaded', function() {
+            const commands = document.querySelectorAll('.command');
+            
+            commands.forEach(command => {
+                const copyBtn = document.createElement('button');
+                copyBtn.className = 'copy-btn';
+                copyBtn.textContent = '📋 Копировать';
+                
+                copyBtn.onclick = function() {
+                    const codeElement = command.querySelector('code');
+                    const codeText = codeElement.textContent;
+                    
+                    navigator.clipboard.writeText(codeText).then(() => {
+                        const originalText = copyBtn.textContent;
+                        copyBtn.textContent = '✅ Скопировано!';
+                        copyBtn.style.background = '#2ecc71';
+                        
+                        setTimeout(() => {
+                            copyBtn.textContent = originalText;
+                            copyBtn.style.background = '';
+                        }, 2000);
+                    }).catch(err => {
+                        console.error('Ошибка копирования:', err);
+                        copyBtn.textContent = '❌ Ошибка';
+                        setTimeout(() => copyBtn.textContent = '📋 Копировать', 2000);
+                    });
+                };
+                
+                command.appendChild(copyBtn);
+            });
+            
+            // Плавная прокрутка по якорным ссылкам
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const targetId = this.getAttribute('href');
+                    if (targetId === '#') return;
+                    
+                    const targetElement = document.querySelector(targetId);
+                    if (targetElement) {
+                        window.scrollTo({
+                            top: targetElement.offsetTop - 20,
+                            behavior: 'smooth'
+                        });
+                    }
                 });
-            };
-            command.appendChild(copyBtn);
+            });
+            
+            // Подсветка текущего раздела при прокрутке
+            const sections = document.querySelectorAll('section');
+            const navLinks = document.querySelectorAll('.toc a');
+            
+            window.addEventListener('scroll', () => {
+                let current = '';
+                
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop;
+                    const sectionHeight = section.clientHeight;
+                    if (scrollY >= sectionTop - 100) {
+                        current = section.getAttribute('id');
+                    }
+                });
+                
+                navLinks.forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href') === '#' + current) {
+                        link.classList.add('active');
+                    }
+                });
+            });
         });
     </script>
+    
+    <style>
+        /* Стиль для активной ссылки в навигации */
+        .toc a.active {
+            color: #e74c3c;
+            font-weight: bold;
+            padding-left: 5px;
+            border-left: 3px solid #e74c3c;
+        }
+        
+        /* Мобильная адаптация */
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 1.8em;
+            }
+            
+            .command {
+                font-size: 0.9em;
+                padding: 10px;
+            }
+            
+            table {
+                display: block;
+                overflow-x: auto;
+            }
+            
+            .quick-start {
+                padding: 15px;
+            }
+        }
+    </style>
 </body>
 </html>
