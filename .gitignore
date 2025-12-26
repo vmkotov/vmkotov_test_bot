@@ -1,0 +1,36 @@
+# Environment variables
+.env
+
+# Binaries
+*.exe
+*.dll
+*.so
+*.dylib
+
+# Database files
+*.db
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log.DS_Store
+bushlatinga_bot
+test_bot
+
+# Удалённые файлы
+.DS_Store
+key.json
+cloud-init.yaml
+Dockerfile
+
+# Temporary patch files
+*.patch
+*.backup
+*.orig
+*.rej
