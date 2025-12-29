@@ -3,126 +3,90 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Полное руководство: Создание Telegram бота на Go с CI/CD на Yandex Cloud</title>
+    <title>Шаблон для деплоя Telegram бота на Yandex Cloud Serverless Containers</title>
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
             line-height: 1.6;
             color: #333;
-            background: #f5f5f5;
+            max-width: 1000px;
+            margin: 0 auto;
             padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
         }
         .container {
-            max-width: 1200px;
-            margin: 0 auto;
             background: white;
-            border-radius: 10px;
+            border-radius: 15px;
             padding: 40px;
-            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            margin-top: 20px;
         }
         h1 {
             color: #2c3e50;
-            border-bottom: 3px solid #3498db;
-            padding-bottom: 15px;
-            margin-bottom: 30px;
-            font-size: 2.5em;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 10px;
         }
         h2 {
-            color: #2c3e50;
-            margin: 40px 0 20px 0;
-            padding-left: 15px;
-            border-left: 4px solid #3498db;
+            color: #3498db;
+            margin-top: 30px;
         }
         h3 {
-            color: #34495e;
-            margin: 25px 0 15px 0;
-            padding-bottom: 10px;
-            border-bottom: 2px solid #ecf0f1;
+            color: #2c3e50;
         }
         .step {
             background: #f8f9fa;
-            border-radius: 8px;
+            border-left: 4px solid #3498db;
             padding: 20px;
             margin: 20px 0;
-            border-left: 4px solid #3498db;
-        }
-        .command {
-            background: #2c3e50;
-            color: #ecf0f1;
-            padding: 15px;
-            border-radius: 5px;
-            font-family: 'Courier New', monospace;
-            margin: 15px 0;
-            overflow-x: auto;
-            position: relative;
-        }
-        .command code {
-            display: block;
-            white-space: pre-wrap;
+            border-radius: 0 8px 8px 0;
         }
         .warning {
             background: #fff3cd;
-            border: 1px solid #ffeaa7;
-            border-left: 4px solid #fdcb6e;
+            border-left: 4px solid #ffc107;
             padding: 15px;
-            border-radius: 5px;
             margin: 20px 0;
+            border-radius: 0 8px 8px 0;
         }
-        .success {
+        .important {
             background: #d1ecf1;
-            border: 1px solid #bee5eb;
-            border-left: 4px solid #17a2b8;
+            border-left: 4px solid #0dcaf0;
             padding: 15px;
-            border-radius: 5px;
             margin: 20px 0;
+            border-radius: 0 8px 8px 0;
         }
-        .quick-start {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border-radius: 10px;
-            padding: 25px;
-            margin: 30px 0;
-            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+        code {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
         }
-        .note {
-            background: #d4edda;
-            border: 1px solid #c3e6cb;
-            border-left: 4px solid #28a745;
-            padding: 15px;
-            border-radius: 5px;
-            margin: 20px 0;
-        }
-        a {
-            color: #3498db;
-            text-decoration: none;
-        }
-        a:hover {
-            text-decoration: underline;
-        }
-        .emoji {
-            font-size: 1.2em;
-            margin-right: 5px;
-        }
-        .toc {
-            background: #e8f4fc;
-            border-radius: 8px;
-            padding: 20px;
-            margin: 30px 0;
-        }
-        .toc ul {
-            margin-left: 20px;
-        }
-        .toc li {
-            margin: 10px 0;
-        }
-        .file-structure {
+        pre {
             background: #2c3e50;
             color: #ecf0f1;
             padding: 20px;
-            border-radius: 5px;
-            font-family: 'Courier New', monospace;
-            margin: 20px 0;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 15px 0;
+        }
+        .command {
+            position: relative;
+        }
+        .copy-btn {
+            position: absolute;
+            right: 10px;
+            top: 10px;
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+        .copy-btn:hover {
+            background: #764ba2;
         }
         table {
             width: 100%;
@@ -130,451 +94,291 @@
             margin: 20px 0;
         }
         th, td {
+            border: 1px solid #ddd;
             padding: 12px;
             text-align: left;
-            border-bottom: 1px solid #ddd;
         }
         th {
-            background-color: #f8f9fa;
+            background: #f2f2f2;
         }
-        tr:hover {
-            background-color: #f5f5f5;
-        }
-        .copy-btn {
-            background: #3498db;
+        .time-badge {
+            display: inline-block;
+            background: #4CAF50;
             color: white;
-            border: none;
-            padding: 8px 15px;
-            border-radius: 4px;
-            cursor: pointer;
-            margin-top: 10px;
-            font-size: 0.9em;
-            transition: background 0.3s;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            margin-left: 10px;
         }
-        .copy-btn:hover {
-            background: #2980b9;
+        .quick-start {
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 10px;
+            margin: 30px 0;
         }
-        .checklist {
-            margin-left: 20px;
+        .quick-start h3 {
+            color: white;
+            margin-top: 0;
         }
-        .checklist li {
-            margin: 8px 0;
-            padding-left: 5px;
-        }
-        .critical {
-            background: #f8d7da;
-            border: 1px solid #f5c6cb;
-            border-left: 4px solid #dc3545;
+        .tip {
+            background: #e8f5e8;
+            border-left: 4px solid #4CAF50;
             padding: 15px;
-            border-radius: 5px;
-            margin: 20px 0;
+            margin: 15px 0;
+            border-radius: 0 8px 8px 0;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1><span class="emoji">📚</span> Полное руководство: Создание Telegram бота на Go с CI/CD на Yandex Cloud</h1>
-
-        <!-- БЛОК БЫСТРОГО СТАРТА -->
+        <h1>🚀 Шаблон для деплоя Telegram бота на Yandex Cloud Serverless Containers</h1>
+        <p><strong>Время деплоя:</strong> 5 минут (при наличии подготовленных ключей)</p>
+        
         <div class="quick-start">
-            <h2 style="color: white; border-left: none; padding-left: 0; margin-top: 0;">
-                <span class="emoji">⚡</span> Быстрый старт из шаблона (за 2 минуты)
-            </h2>
-            <p>Уже есть готовый рабочий шаблон? Просто выполните:</p>
-
+            <h3>⚡ СУПЕР-БЫСТРЫЙ СТАРТ (если копируешь этот репозиторий):</h3>
             <div class="command">
-                <code># Клонируйте шаблон
-git clone https://github.com/vmkotov/vmkotov_test_bot.git my-new-bot
-cd my-new-bot
+                <button class="copy-btn" onclick="copyToClipboard(this)">Копировать всё</button>
+                <pre id="quick-commands"># 1. Клонируй и зайди в папку
+git clone https://github.com/vmkotov/vmkotov_test_bot.git my-bot
+cd my-bot
 
-# Настройте новый проект
-rm -rf .git
-git init
-go mod init my-new-bot
-cp .env.example .env
+# 2. Исправь модуль и импорты (КРИТИЧЕСКИ ВАЖНО!)
+sed -i '' 's|module vmkotov_test_bot|module my-bot|g' go.mod
+sed -i '' 's|"vmkotov_test_bot/bot"|"my-bot/bot"|g' main.go
 
-# Добавьте токен бота в .env
-echo "TELEGRAM_BOT_TOKEN=your_token_here" >> .env</code>
+# 3. Получи все ID для секретов
+echo "=== КОПИРУЙ ЭТИ ЗНАЧЕНИЯ В GITHUB SECRETS ==="
+echo "YC_CLOUD_ID: $(yc config get cloud-id 2>/dev/null || echo 'b1g7r2nm7eo87juq7h7n')"
+echo "YC_FOLDER_ID: $(yc config get folder-id 2>/dev/null || echo 'b1gk2n6bk496dkh4e9kr')"
+echo "YC_SERVICE_ACCOUNT_ID: $(yc iam service-account get your-sa --format json 2>/dev/null | jq -r '.id' || echo 'ВСТАВЬ_SA_ID')"
+echo "YC_REGISTRY_ID: $(yc container registry get your-registry --format json 2>/dev/null | jq -r '.id' || echo 'ВСТАВЬ_REGISTRY_ID')"
+
+# 4. Создай ключ для GitHub Secret
+yc iam key create --service-account-name your-sa --output iam-key.json
+echo "YC_IAM_KEY_JSON содержимое:"
+cat iam-key.json | head -5
+echo "..."
+echo "=== КОПИРУЙ ВЕСЬ JSON В GITHUB SECRET 'YC_IAM_KEY_JSON' ==="</pre>
             </div>
-
-            <div style="margin-top: 20px;">
-                <p><strong>Обязательные шаги после клонирования:</strong></p>
-                <ul class="checklist" style="color: white;">
-                    <li>✅ <strong>Замените имя модуля в `go.mod` и импортах в `main.go`</strong></li>
-                    <li>✅ <strong>Настройте Yandex Cloud: создайте SA, Registry, Container</strong> (Шаг 5)</li>
-                    <li>✅ <strong>Выдайте сервисному аккаунту все необходимые права</strong> (Шаг 6)</li>
-                    <li>✅ <strong>Добавьте 6 секретов в настройки GitHub репозитория</strong></li>
-                    <li>✅ Запушьте код — CI/CD автоматически развернёт бота</li>
-                </ul>
-            </div>
-
-            <p style="margin-top: 15px; font-style: italic;">
-                Пропуск выделенных шагов — основная причина ошибок деплоя. Ниже — полное руководство ↓
-            </p>
         </div>
 
-        <div class="toc">
-            <h2>📋 Содержание</h2>
+        <div class="warning">
+            <strong>⚠️ ВАЖНО! Уроки, выученные кровью:</strong>
             <ul>
-                <li><a href="#preparation">🛠️ 1. Подготовка и настройка</a></li>
-                <li><a href="#create-bot">🤖 2. Создание бота в Telegram</a></li>
-                <li><a href="#local-dev">💻 3. Локальная разработка</a></li>
-                <li><a href="#project-structure">📁 4. Структура проекта</a></li>
-                <li><a href="#yc-setup">☁️ 5. Настройка Yandex Cloud</a></li>
-                <li><a href="#github-setup">🔧 6. Настройка GitHub Actions</a></li>
-                <li><a href="#deployment">🚀 7. Деплой и вебхуки</a></li>
-                <li><a href="#debugging">🔍 8. Отладка и мониторинг</a></li>
-                <li><a href="#templates">🎯 9. Шаблоны и лучшие практики</a></li>
+                <li><code>module имя</code> в go.mod и импорты должны совпадать 1:1</li>
+                <li>Папка <code>bot/</code> должна существовать, а <code>bot.go</code> быть внутри</li>
+                <li>Используй <code>Dockerfile.yc</code> (не переименовывай в Dockerfile!)</li>
+                <li>Не добавляй <code>PORT=8080</code> в переменные - Yandex Cloud запрещает</li>
+                <li>Нужны ВСЕ 6 секретов, иначе workflow пропустит деплой</li>
             </ul>
         </div>
 
-        <!-- Далее идут существующие секции 1-4 (они остаются без изменений) -->
-        <section id="preparation">
-            <h2><span class="emoji">🛠️</span> 1. Подготовка и настройка</h2>
-            <div class="step">
-                <h3>Необходимые инструменты:</h3>
-                <div class="command">
-                    <code># macOS
-brew install go
-brew install git
-brew install docker
-
-# Ubuntu/Debian
-sudo apt update
-sudo apt install -y golang git docker.io curl wget</code>
-                </div>
-                <div class="command">
-                    <code># Установка Yandex Cloud CLI
-curl -sSL https://storage.yandexcloud.net/yandexcloud-yc/install.sh | bash
-source ~/.bashrc  # или source ~/.zshrc
-yc --version</code>
-                </div>
-            </div>
-            <div class="note">
-                <strong>💡 Примечание:</strong> Если вы Windows пользователь, используйте WSL2 (Windows Subsystem for Linux) или Docker Desktop.
-            </div>
-        </section>
-
-        <section id="create-bot">
-            <h2><span class="emoji">🤖</span> 2. Создание бота в Telegram</h2>
-            <div class="step">
-                <h3>Шаг 1: Создание нового бота</h3>
-                <p>Откройте Telegram и найдите <a href="https://t.me/BotFather" target="_blank">@BotFather</a></p>
-                <div class="command">
-                    <code>/newbot
-→ Ваше имя бота: Мой тестовый бот
-→ Username бота: mytest_bot</code>
-                </div>
-                <p><strong>СОХРАНИТЕ ТОКЕН!</strong> Он выглядит так: <code>7123456789:AAHdqTcvCH1vGWJxfSeofSAs0K5PALDsaw</code></p>
-            </div>
-        </section>
-
-        <section id="local-dev">
-            <h2><span class="emoji">💻</span> 3. Локальная разработка</h2>
-            <div class="step">
-                <h3>Инициализация проекта:</h3>
-                <div class="command">
-                    <code># Создайте директорию проекта
-mkdir telegram-bot-project
-cd telegram-bot-project
-go mod init my-telegram-bot
-go get github.com/go-telegram-bot-api/telegram-bot-api/v5
-go get github.com/joho/godotenv</code>
-                </div>
-            </div>
-        </section>
-
-        <section id="project-structure">
-            <h2><span class="emoji">📁</span> 4. Структура проекта</h2>
-            <div class="file-structure">
-telegram-bot-project/
-├── main.go                 # Основной код бота
-├── go.mod                  # Go зависимости (ИМЯ МОДУЛЯ ДОЛЖНО СОВПАДАТЬ!)
+        <h2>📁 Структура проекта (должна быть ТОЧНО такой)</h2>
+        <pre>
+vmkotov_test_bot/
+├── .github/workflows/deploy.yml    # GitHub Actions workflow
+├── bot/
+│   └── bot.go                      # Обработчик Telegram
+├── main.go                         # Основной файл
+├── go.mod                          # Модуль Go (ИМЯ ПРОЕКТА!)
 ├── go.sum
-├── .env.example
-├── .gitignore
-├── Dockerfile.yc           # Dockerfile для Yandex Cloud
-├── README.md
-└── .github/workflows/
-    └── deploy.yml          # Workflow для CI/CD
-            </div>
-        </section>
+└── Dockerfile.yc                   # Dockerfile (именно .yc!)</pre>
 
-        <!-- ВСТАВЛЕННО: Дополненная и критически важная секция настройки YC -->
-        <section id="yc-setup">
-            <h2><span class="emoji">☁️</span> 5. Настройка Yandex Cloud</h2>
-            <div class="critical">
-                <strong>⚠️ Внимание! Этот шаг нельзя пропускать.</strong> Без правильно настроенных ресурсов и прав CI/CD не сможет задеплоить бота.
-            </div>
-            <div class="step">
-                <h3>Шаг 5.1: Авторизация и выбор проекта</h3>
-                <div class="command">
-                    <code># Инициализируйте профиль yc (если еще не сделано)
-yc init
+        <h2>🔑 Шаг 1: Подготовка Yandex Cloud</h2>
+        <div class="step">
+            <h3>1.1. Установи и настрой YC CLI</h3>
+            <pre>curl https://storage.yandexcloud.net/yandexcloud-yc/install.sh | bash
+exec -l $SHELL
+yc init</pre>
+            
+            <h3>1.2. Создай необходимые ресурсы</h3>
+            <pre># Container Registry
+yc container registry create --name ваш-бот-registry
 
-# Убедитесь, что вы в нужном облаке и папке
-yc config list</code>
-                </div>
-            </div>
-            <div class="step">
-                <h3>Шаг 5.2: Создание сервисного аккаунта (Service Account)</h3>
-                <p>Он нужен для безопасной работы CI/CD из GitHub.</p>
-                <div class="command">
-                    <code># Создайте сервисный аккаунт
-yc iam service-account create --name your-bot-sa
+# Service Account
+yc iam service-account create --name ваш-бот-sa
 
-# Получите и сохраните его ID (понадобится для секретов GitHub)
-yc iam service-account get --name your-bot-sa --format json | jq -r '.id'
-# Запишите этот ID (например, aje0eno6g4o1o94901fu)</code>
-                </div>
-            </div>
-            <div class="step">
-                <h3>Шаг 5.3: Создание Container Registry</h3>
-                <p>Здесь будут храниться образы Docker вашего бота.</p>
-                <div class="command">
-                    <code># Создайте реестр
-yc container registry create --name your-bot-registry
-
-# Получите и сохраните его ID
-yc container registry get --name your-bot-registry --format json | jq -r '.id'
-# Запишите этот ID (например, crpu0dros8vtrtmeiqt3)</code>
-                </div>
-            </div>
-            <div class="step">
-                <h3>Шаг 5.4: Создание Serverless Container</h3>
-                <p>Это "машина", на которой будет работать ваш бот в облаке.</p>
-                <div class="command">
-                    <code># Создайте контейнер
-yc serverless container create --name your-bot-container
-
-# Запишите его имя (your-bot-container)</code>
-                </div>
-                <p class="note">Имя контейнера должно совпадать с именем, указанным в файле <code>.github/workflows/deploy.yml</code> (строка с <code>--container-name</code>).</p>
-            </div>
-        </section>
-
-        <!-- ВСТАВЛЕННО: Полностью переработанная и критически важная секция настройки GitHub Actions -->
-        <section id="github-setup">
-            <h2><span class="emoji">🔧</span> 6. Настройка GitHub Actions</h2>
-            <div class="critical">
-                <strong>🚨 Ключевой момент деплоя!</strong> 90% ошибок происходят из-за неправильных секретов или отсутствия прав у сервисного аккаунта.
-            </div>
-
-            <!-- ВСТАВЛЕННО: Новая подсекция про права -->
-            <div class="step">
-                <h3>6.1 Важно: Настройка прав доступа (ролей) для сервисного аккаунта</h3>
-                <p>Выполните эти команды <strong>до</strong> настройки секретов в GitHub. Без этих прав CI/CD упадет с ошибкой <code>PermissionDenied</code>.</p>
-                <div class="command">
-                    <code># 1. Дайте роль 'editor' на всю папку (дает доступ ко всем ресурсам в ней)
+# Назначь права
 yc resource-manager folder add-access-binding $(yc config get folder-id) \
-  --service-account-name your-bot-sa \
-  --role editor
+  --service-account-name ваш-бот-sa \
+  --role container-registry.images.puller
+  
+yc resource-manager folder add-access-binding $(yc config get folder-id) \
+  --service-account-name ваш-бот-sa \
+  --role editor</pre>
+        </div>
 
-# 2. Дайте права на запись (push) в Container Registry
-yc container registry add-access-binding YOUR_REGISTRY_ID \
-  --service-account-name your-bot-sa \
-  --role container-registry.images.pusher
+        <h2>⚙️ Шаг 2: Настройка GitHub Secrets</h2>
+        <div class="important">
+            <strong>КРИТИЧЕСКИ ВАЖНО:</strong> Без всех 6 секретов workflow пропустит деплой!
+        </div>
+        
+        <table>
+            <thead>
+                <tr>
+                    <th>Secret Name</th>
+                    <th>Как получить</th>
+                    <th>Пример значения</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><code>TELEGRAM_BOT_TOKEN</code></td>
+                    <td>От @BotFather в Telegram</td>
+                    <td><code>8324160111:AAHoxEtIdaNHurLfbta4fHB3iYy0ixnTc0</code></td>
+                </tr>
+                <tr>
+                    <td><code>YC_IAM_KEY_JSON</code></td>
+                    <td><pre>yc iam key create --service-account-name ваш-бот-sa --output key.json
+cat key.json</pre></td>
+                    <td>Весь JSON (4000+ символов)</td>
+                </tr>
+                <tr>
+                    <td><code>YC_CLOUD_ID</code></td>
+                    <td><code>yc config get cloud-id</code></td>
+                    <td><code>b1g7r2nm7eo87juq7h7n</code></td>
+                </tr>
+                <tr>
+                    <td><code>YC_FOLDER_ID</code></td>
+                    <td><code>yc config get folder-id</code></td>
+                    <td><code>b1gk2n6bk496dkh4e9kr</code></td>
+                </tr>
+                <tr>
+                    <td><code>YC_SERVICE_ACCOUNT_ID</code></td>
+                    <td><pre>yc iam service-account get ваш-бот-sa --format json | jq -r '.id'</pre></td>
+                    <td><code>ajeni2drn7gs6cmemvv2</code></td>
+                </tr>
+                <tr>
+                    <td><code>YC_REGISTRY_ID</code></td>
+                    <td><pre>yc container registry get ваш-бот-registry --format json | jq -r '.id'</pre></td>
+                    <td><code>crpvrfum4pqm6pp2sv53</code></td>
+                </tr>
+            </tbody>
+        </table>
 
-# 3. Дайте права на вызов (invoke) Serverless Container
-yc serverless container add-access-binding your-bot-container \
-  --service-account-name your-bot-sa \
-  --role serverless.containers.invoker</code>
-                </div>
-                <div class="note">
-                    <strong>💡 Совет:</strong> Замените <code>YOUR_REGISTRY_ID</code> и <code>your-bot-container</code> на реальные значения из шага 5.
-                </div>
+        <div class="tip">
+            <strong>💡 Совет:</strong> Сначала получи все ID, потом разом добавь все 6 секретов в GitHub.
+        </div>
+
+        <h2>🚀 Шаг 3: Адаптация проекта</h2>
+        <div class="step">
+            <h3>3.1. Измени имя проекта (ОБЯЗАТЕЛЬНО!)</h3>
+            <div class="command">
+                <button class="copy-btn" onclick="copyToClipboard(this)">Копировать</button>
+                <pre># В go.mod
+sed -i '' 's|module vmkotov_test_bot|module ваш-проект|g' go.mod
+
+# В main.go
+sed -i '' 's|"vmkotov_test_bot/bot"|"ваш-проект/bot"|g' main.go</pre>
             </div>
+            
+            <h3>3.2. Убедись в структуре файлов</h3>
+            <pre># Должно быть ТОЧНО так:
+ls -la
+# Dockerfile.yc  (не Dockerfile!)
+# bot/bot.go     (не telegram_handler.go в корне!)</pre>
+        </div>
 
-            <div class="step">
-                <h3>6.2 Сборка секретов для GitHub</h3>
-                <p>Вам нужно добавить в Secrets вашего GitHub-репозитория ровно 6 переменных.</p>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Имя секрета в GitHub</th>
-                            <th>Как получить значение</th>
-                            <th>Пример значения</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td><code>TELEGRAM_BOT_TOKEN</code></td>
-                            <td>Токен от @BotFather</td>
-                            <td><code>8259540XXX:AAEc5luOFTX...</code></td>
-                        </tr>
-                        <tr>
-                            <td><code>YC_IAM_KEY_JSON</code></td>
-                            <td><code>yc iam key create --service-account-name your-bot-sa --output key.json && cat key.json</code></td>
-                            <td>Полный JSON (скопировать всё содержимое файла)</td>
-                        </tr>
-                        <tr>
-                            <td><code>YC_SERVICE_ACCOUNT_ID</code></td>
-                            <td><code>yc iam service-account get --name your-bot-sa --format json | jq -r '.id'</code></td>
-                            <td><code>aje0eno6g4o1o94901fu</code></td>
-                        </tr>
-                        <tr>
-                            <td><code>YC_REGISTRY_ID</code></td>
-                            <td><code>yc container registry get --name your-bot-registry --format json | jq -r '.id'</code></td>
-                            <td><code>crpu0dros8vtrtmeiqt3</code></td>
-                        </tr>
-                        <tr>
-                            <td><code>YC_CLOUD_ID</code></td>
-                            <td><code>yc config get cloud-id</code></td>
-                            <td><code>b1g7r2nm7eo87juq7h7n</code></td>
-                        </tr>
-                        <tr>
-                            <td><code>YC_FOLDER_ID</code></td>
-                            <td><code>yc config get folder-id</code></td>
-                            <td><code>b1gk2n6bk496dkh4e9kr</code></td>
-                        </tr>
-                    </tbody>
-                </table>
-                <p><strong>Где добавить:</strong> На GitHub → Ваш репозиторий → Settings → Secrets and variables → Actions → New repository secret.</p>
-            </div>
+        <h2>📦 Шаг 4: Деплой</h2>
+        <div class="step">
+            <h3>4.1. Запуши в GitHub</h3>
+            <pre>git add .
+git commit -m "Initial bot deployment"
+git push origin main</pre>
+            
+            <h3>4.2. Проверь GitHub Actions</h3>
+            <p>Зайди в репозиторий → Actions → "Deploy vmkotov_test_bot"</p>
+            <p>Если все секреты есть, запустится деплой.</p>
+        </div>
 
-            <div class="step">
-                <h3>6.3 Финальная проверка перед первым пушем</h3>
-                <p>Перед тем как запушить код и запустить CI/CD, убедитесь:</p>
-                <ul class="checklist">
-                    <li><input type="checkbox"> Имя модуля в <code>go.mod</code> совпадает с импортом в <code>main.go</code> (например, <code>module my_new_bot</code> и <code>import "my_new_bot/bot"</code>)</li>
-                    <li><input type="checkbox"> В workflow-файле (<code>.github/workflows/deploy.yml</code>) имя контейнера совпадает с созданным в YC</li>
-                    <li><input type="checkbox"> Все 6 секретов добавлены в настройках GitHub-репозитория</li>
-                    <li><input type="checkbox"> Сервисному аккаунту выданы все 3 роли (шаг 6.1)</li>
-                </ul>
-            </div>
-        </section>
+        <h2>🔧 Шаг 5: Настройка вебхука</h2>
+        <div class="step">
+            <pre># Получи URL контейнера
+CONTAINER_URL=$(yc serverless container get --name ваш-бот --format json | jq -r '.url')
 
-        <!-- ВСТАВЛЕННО: Дополненная секция деплоя -->
-        <section id="deployment">
-            <h2><span class="emoji">🚀</span> 7. Деплой и вебхуки</h2>
-            <div class="step">
-                <h3>7.1 Первый ручной деплой (для проверки)</h3>
-                <p>После настройки секретов можно запустить деплой вручную, чтобы убедиться, что всё работает.</p>
-                <div class="command">
-                    <code># Настройте Docker для работы с Yandex Cloud Registry
-yc container registry configure-docker
+# Установи вебхук
+curl -X POST "https://api.telegram.org/bot&lt;ВАШ_ТОКЕН&gt;/setWebhook?url=$CONTAINER_URL/"
 
-# Соберите и запушьте образ локально (замените REGISTRY_ID)
-docker build -t cr.yandex/REGISTRY_ID/your-bot:latest -f Dockerfile.yc .
-docker push cr.yandex/REGISTRY_ID/your-bot:latest
+# Проверь
+curl "https://api.telegram.org/bot&lt;ВАШ_ТОКЕН&gt;/getWebhookInfo"</pre>
+        </div>
 
-# Задеплойте контейнер вручную (замените ID и токен)
-yc serverless container revision deploy \
-  --container-name your-bot-container \
-  --image cr.yandex/REGISTRY_ID/your-bot:latest \
-  --service-account-id YOUR_SERVICE_ACCOUNT_ID \
-  --environment "TELEGRAM_BOT_TOKEN=YOUR_TOKEN"</code>
-                </div>
-            </div>
-            <div class="step">
-                <h3>7.2 Автоматический деплой через CI/CD</h3>
-                <p>После успешного ручного деплоя можно доверить всё автоматике:</p>
-                <div class="command">
-                    <code># Просто запушите код в ветку main — GitHub Actions сделает всё остальное
-git add .
-git commit -m "Initial commit: ready for CI/CD"
-git push origin main</code>
-                </div>
-                <p>После пуша отслеживайте прогресс на вкладке <strong>Actions</strong> вашего репозитория на GitHub.</p>
-            </div>
-            <div class="step">
-                <h3>7.3 Настройка вебхука Telegram</h3>
-                <p>Когда контейнер запущен, настройте Telegram на отправку обновлений ему.</p>
-                <div class="command">
-                    <code># Получите URL вашего контейнера
-CONTAINER_URL=$(yc serverless container get --name your-bot-container --format json | jq -r '.url')
-echo $CONTAINER_URL
+        <h2>🚨 Частые ошибки и решения</h2>
+        <table>
+            <tr>
+                <th>Ошибка</th>
+                <th>Причина</th>
+                <th>Решение</th>
+            </tr>
+            <tr>
+                <td><code>secrets-exist=false</code></td>
+                <td>Не хватает секретов</td>
+                <td>Добавь ВСЕ 6 секретов</td>
+            </tr>
+            <tr>
+                <td><code>package ... is not in std</code></td>
+                <td>Неправильные импорты</td>
+                <td>Исправь go.mod и main.go как в шаге 3.1</td>
+            </tr>
+            <tr>
+                <td><code>COPY .env: not found</code></td>
+                <td>Старый Dockerfile</td>
+                <td>Используй Dockerfile.yc (не меняй имя!)</td>
+            </tr>
+            <tr>
+                <td><code>Environment variable PORT is forbidden</code></td>
+                <td>Лишняя переменная</td>
+                <td>Удали PORT=8080 из переменных</td>
+            </tr>
+        </table>
 
-# Установите вебхук (замените YOUR_TOKEN)
-curl -X POST "https://api.telegram.org/botYOUR_TOKEN/setWebhook" \
-  -H "Content-Type: application/json" \
-  -d "{\"url\": \"$CONTAINER_URL/\"}"</code>
-                </div>
-                <div class="note">
-                    <strong>💡 Важно:</strong> Убедитесь, что в коде бота (<code>main.go</code>) обработчик вебхука зарегистрирован на корневой путь <code>"/"</code>.
-                </div>
-            </div>
-        </section>
+        <div class="important">
+            <h3>✅ Чек-лист успешного деплоя:</h3>
+            <ol>
+                <li>Все 6 секретов добавлены в GitHub ✓</li>
+                <li><code>go.mod</code> и импорты исправлены ✓</li>
+                <li>Файл называется <code>Dockerfile.yc</code> ✓</li>
+                <li>Папка <code>bot/</code> с <code>bot.go</code> внутри ✓</li>
+                <li>Workflow прошёл все шаги до "Deployment complete!" ✓</li>
+                <li>Вебхук установлен и проверен ✓</li>
+            </ol>
+        </div>
 
-        <!-- ВСТАВЛЕННО: Новая секция с частыми ошибками -->
-        <section id="debugging">
-            <h2><span class="emoji">🔍</span> 8. Отладка и мониторинг</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Ошибка / Симптом</th>
-                        <th>Вероятная причина</th>
-                        <th>Решение</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td><code>ERROR: failed to find container with name... Permission denied</code></td>
-                        <td>У сервисного аккаунта (SA) нет роли <code>editor</code> на папке или роли на контейнере.</td>
-                        <td>Выполнить <strong>Шаг 6.1</strong> данного руководства.</td>
-                    </tr>
-                    <tr>
-                        <td><code>denied: Permission denied</code> при push образа</td>
-                        <td>У SA нет роли <code>container-registry.images.pusher</code> на реестре.</td>
-                        <td>Выполнить <strong>Шаг 6.1</strong>.</td>
-                    </tr>
-                    <tr>
-                        <td>Бот собирается локально, но падает в контейнере с <code>EOF</code></td>
-                        <td>Несовпадение имени Go-модуля в <code>go.mod</code> и импортов в коде.</td>
-                        <td>Убедиться, что имя в <code>go.mod</code> (например, <code>my_new_bot</code>) совпадает с импортом <code>"my_new_bot/bot"</code> в <code>main.go</code>.</td>
-                    </tr>
-                    <tr>
-                        <td>Вебхук устанавливается, но бот не отвечает</td>
-                        <td>Контейнер не запущен или код содержит ошибку.</td>
-                        <td>Проверить логи: <code>yc serverless container revision list --container-name your-bot-container</code> и получить логи последней ревизии.</td>
-                    </tr>
-                    <tr>
-                        <td>GitHub Actions падает на этапе <code>Configure Yandex Cloud with IAM Key</code></td>
-                        <td>Неверный или просроченный JSON ключ в секрете <code>YC_IAM_KEY_JSON</code>.</td>
-                        <td>Создать новый ключ: <code>yc iam key create --service-account-name your-bot-sa --output new-key.json</code> и обновить секрет.</td>
-                    </tr>
-                </tbody>
-            </table>
-            <div class="step">
-                <h3>Полезные команды для мониторинга</h3>
-                <div class="command">
-                    <code># Посмотреть список ревизий (версий) вашего контейнера
-yc serverless container revision list --container-name your-bot-container
+        <h2>📞 Поддержка</h2>
+        <p>Если что-то пошло не так, проверь:</p>
+        <ul>
+            <li>Логи в GitHub Actions</li>
+            <li><code>yc serverless container logs --name ваш-бот</code></li>
+            <li>Структуру проекта (должна быть 1:1 как выше)</li>
+        </ul>
 
-# Получить URL запущенного контейнера
-yc serverless container get --name your-bot-container --format json | jq -r '.url'
-
-# Проверить статус вебхука в Telegram
-curl -s "https://api.telegram.org/botYOUR_TOKEN/getWebhookInfo" | jq</code>
-                </div>
-            </div>
-        </section>
-
-        <section id="templates">
-            <h2><span class="emoji">🎯</span> 9. Шаблоны и лучшие практики</h2>
-            <div class="note">
-                <p><strong>✅ Готовые шаблоны:</strong></p>
-                <ul class="checklist">
-                    <li><a href="https://github.com/vmkotov/vmkotov_test_bot" target="_blank">Базовый шаблон</a> — то, что описано в этом руководстве</li>
-                    <li><a href="https://github.com/vmkotov/python-telegram-bot-template" target="_blank">Шаблон на Python (aiogram)</a></li>
-                </ul>
-            </div>
-        </section>
+        <p style="text-align: center; margin-top: 40px; padding-top: 20px; border-top: 1px solid #eee;">
+            Обновлено: 29 декабря 2024 | На основе реального опыта деплоя RiskReporter_bot<br>
+            <strong>Ключевое правило:</strong> Делай ВСЁ точно как в шаблоне, не импровизируй!
+        </p>
     </div>
+
     <script>
-        // Скрипт для кнопок копирования (оставляю из исходного файла, но в данном контексте не обязателен)
-        document.querySelectorAll('.command').forEach(block => {
-            const button = document.createElement('button');
-            button.className = 'copy-btn';
-            button.textContent = '📋 Копировать';
-            button.onclick = () => {
-                const code = block.querySelector('code').textContent;
-                navigator.clipboard.writeText(code).then(() => {
-                    button.textContent = '✅ Скопировано!';
-                    setTimeout(() => button.textContent = '📋 Копировать', 2000);
-                });
+        function copyToClipboard(button) {
+            const pre = button.parentElement.querySelector('pre');
+            const text = pre.textContent;
+            navigator.clipboard.writeText(text).then(() => {
+                const originalText = button.textContent;
+                button.textContent = 'Скопировано!';
+                setTimeout(() => {
+                    button.textContent = originalText;
+                }, 2000);
+            });
+        }
+        
+        // Автоматическое копирование при клике на любой код
+        document.querySelectorAll('code').forEach(code => {
+            code.onclick = function() {
+                navigator.clipboard.writeText(this.textContent);
+                this.style.backgroundColor = '#4CAF50';
+                setTimeout(() => this.style.backgroundColor = '', 500);
             };
-            block.appendChild(button);
         });
     </script>
 </body>
